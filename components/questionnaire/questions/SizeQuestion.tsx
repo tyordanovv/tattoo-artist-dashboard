@@ -1,16 +1,20 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 
-const sizes = ['Small', 'Medium', 'Large', 'Full Sleeve']
+const sizes = [
+  'Tiny (1-3 inches, delicate)', 
+  'Small (4-6 inches)', 
+  'Medium (7-10 inches)', 
+  'Large (11+ inches, e.g., half-sleeve)', 
+  'Extra-large (full sleeve, back piece, thigh panel)'
+]
 
 export default function SizeQuestion({ onAnswer }: { onAnswer: (answer: string) => void }) {
   const [selectedSize, setSelectedSize] = useState<string>('')
 
-  const handleSubmit = () => {
-    if (selectedSize) {
-      onAnswer(selectedSize)
-    }
-  }
+  useEffect(() => {
+    onAnswer(selectedSize)
+  }, [selectedSize, onAnswer])
 
   return (
     <div className="space-y-4">
@@ -19,14 +23,15 @@ export default function SizeQuestion({ onAnswer }: { onAnswer: (answer: string) 
         {sizes.map((size) => (
           <Button
             key={size}
-            onClick={() => setSelectedSize(size)}
+            onClick={() => setSelectedSize(prev => 
+              prev === size ? '' : size
+            )}
             variant={selectedSize === size ? 'default' : 'outline'}
           >
             {size}
           </Button>
         ))}
       </div>
-      <Button onClick={handleSubmit} disabled={!selectedSize} className="mt-4">Confirm Selection</Button>
     </div>
   )
 }

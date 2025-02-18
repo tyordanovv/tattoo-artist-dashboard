@@ -9,7 +9,6 @@ const projects: Project[] = [
     status: 'In Progress',
     designUrl: '/placeholder.svg?height=400&width=600',
   },
-  // ... (add more mock projects as needed)
 ]
 
 const comments: { [key: string]: Comment[] } = {

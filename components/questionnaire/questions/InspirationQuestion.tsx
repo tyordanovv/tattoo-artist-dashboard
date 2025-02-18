@@ -1,13 +1,12 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from 'react'
 import { Textarea } from '@/components/ui/textarea'
 
 export default function InspirationQuestion({ onAnswer }: { onAnswer: (answer: string) => void }) {
   const [inspiration, setInspiration] = useState<string>('')
 
-  const handleSubmit = () => {
+  useEffect(() => {
     onAnswer(inspiration)
-  }
+  }, [inspiration, onAnswer])
 
   return (
     <div className="space-y-4">
@@ -18,8 +17,6 @@ export default function InspirationQuestion({ onAnswer }: { onAnswer: (answer: s
         onChange={(e) => setInspiration(e.target.value)}
         rows={4}
       />
-      <Button onClick={handleSubmit} className="mt-4">Confirm</Button>
     </div>
   )
 }
-

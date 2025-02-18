@@ -1,10 +1,13 @@
-import { useState } from 'react'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from 'react'
 import { Input } from '@/components/ui/input'
 import { Upload } from 'lucide-react'
 
 export default function ReferenceUpload({ onUpload }: { onUpload: (files: File[]) => void }) {
   const [files, setFiles] = useState<File[]>([])
+
+  useEffect(() => {
+    onUpload(files)
+  }, [files, onUpload])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -12,13 +15,11 @@ export default function ReferenceUpload({ onUpload }: { onUpload: (files: File[]
     }
   }
 
-  const handleSubmit = () => {
-    onUpload(files)
-  }
-
   return (
     <div className="space-y-4">
-      <h2 className="text-2xl font-semibold">Do you have any reference images or ideas you'd like to upload?</h2>
+      <h2 className="text-2xl font-semibold">
+        Do you have any reference images or ideas you'd like to upload?
+      </h2>
       <div className="flex items-center space-x-4">
         <Input
           type="file"
@@ -36,7 +37,6 @@ export default function ReferenceUpload({ onUpload }: { onUpload: (files: File[]
         </label>
         <span>{files.length} file(s) selected</span>
       </div>
-      <Button onClick={handleSubmit} disabled={files.length === 0} className="mt-4">Upload References</Button>
     </div>
   )
 }
