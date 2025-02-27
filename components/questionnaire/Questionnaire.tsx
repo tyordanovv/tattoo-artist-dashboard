@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { Progress } from '@/components/ui/progress'
 import ThemeQuestion from './questions/ThemeQuestion'
 import StyleQuestion from './questions/StyleQuestion'
-import PlacementQuestion from './questions/DesignElementsInput'
 import SizeQuestion from './questions/SizeQuestion'
 import InspirationQuestion from './questions/InspirationQuestion'
 import ReferenceUpload from './questions/ReferenceUpload'
@@ -40,7 +39,7 @@ export default function Questionnaire({ surveyId }: QuestionnaireProps) {
     referenceImages: [] as File[]
   })
   const [showPassword, setShowPassword] = useState(false)
-  const [showProfileForm, setShowProfileForm] = useState(false)
+  const [showProfileForm, setShowProfileForm] = useState(true)
   const router = useRouter()
   const supabase = createClient()
   const [loading, setLoading] = useState(false)

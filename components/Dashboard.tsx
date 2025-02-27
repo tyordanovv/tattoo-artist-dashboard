@@ -7,12 +7,12 @@ import { H1 } from '@/components/ui/typography'
 import { Breadcrumb } from './Breadcrumb'
 import { useUser } from '@/hooks/use-user'
 import { createClient } from '@/lib/supabaseClient'
-import { Project } from '@/lib/types'
+import { Design } from '@/lib/types'
 
 export default function Dashboard({ initialUser }: { initialUser: any }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [filterStatus, setFilterStatus] = useState('all')
-  const [projects, setProjects] = useState<Project[]>([])
+  const [projects, setProjects] = useState<Design[]>([])
   const [loading, setLoading] = useState(true)
   const supabase = createClient()
   const clientUser = useUser() || initialUser
@@ -32,8 +32,14 @@ export default function Dashboard({ initialUser }: { initialUser: any }) {
 
         const { data, error } = await query
 
+        console.log("data")
+        console.log(data)
+
         if (error) throw error
         setProjects(data || [])
+
+        console.log("setProjects")
+        console.log(projects)
       } catch (error) {
         console.error('Error fetching projects:', error)
       } finally {
@@ -45,8 +51,7 @@ export default function Dashboard({ initialUser }: { initialUser: any }) {
   }, [clientUser?.id, clientUser?.role])
 
   const filteredProjects = projects.filter(project => 
-    (project.clientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    project.theme?.toLowerCase().includes(searchTerm.toLowerCase())
+    (project.clientName?.toLowerCase().includes(searchTerm.toLowerCase())
   ) &&
     (filterStatus === 'all' || project.status === filterStatus)
   );
@@ -55,10 +60,10 @@ export default function Dashboard({ initialUser }: { initialUser: any }) {
     <div className="flex flex-col min-h-screen bg-background text-foreground">
       <Header 
         user={clientUser}
-        searchTerm={searchTerm} 
-        setSearchTerm={setSearchTerm}
-        filterStatus={filterStatus}
-        setFilterStatus={setFilterStatus}
+        // searchTerm={searchTerm} 
+        // setSearchTerm={setSearchTerm}
+        // filterStatus={filterStatus}
+        // setFilterStatus={setFilterStatus}
       />
       
       <main className="flex-1 overflow-x-hidden overflow-y-auto bg-background p-6">

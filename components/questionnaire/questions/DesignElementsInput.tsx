@@ -36,7 +36,7 @@ export default function DesignElementsInput({ onAnswer }: DesignElementsInputPro
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">
-        Add design elements you want in your tattoo (e.g. waterfall, Honda CBR, young woman):
+        Add design elements you want in your tattoo (e.g. samurai, german sheepherd, woman wearing sunglasses):
       </h2>
       <div className="flex items-center space-x-2">
         <input 
@@ -45,7 +45,7 @@ export default function DesignElementsInput({ onAnswer }: DesignElementsInputPro
           onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type an element and press Enter or click Add"
-          className="border p-2 flex-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="border p-2 flex-1 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
         />
         <Button onClick={handleAddElement}>Add</Button>
       </div>
@@ -53,7 +53,7 @@ export default function DesignElementsInput({ onAnswer }: DesignElementsInputPro
         <ul className="flex flex-wrap gap-2">
           {elements.map((element, index) => (
             <li key={index} className="flex items-center gap-1 bg-gray-200 px-2 py-1 rounded-md">
-              <span>{element}</span>
+              <span className="text-black">{element}</span>
               <button 
                 onClick={() => handleRemoveElement(element)}
                 className="text-red-500 font-bold hover:text-red-700"
@@ -65,5 +65,5 @@ export default function DesignElementsInput({ onAnswer }: DesignElementsInputPro
         </ul>
       )}
     </div>
-  )
+  );  
 }

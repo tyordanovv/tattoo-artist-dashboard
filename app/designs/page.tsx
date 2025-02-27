@@ -60,7 +60,7 @@ export default function DesignsPage() {
             if (updateError) throw updateError;
 
             // Redirect user to profile or success page
-            router.push('/dashboard');
+            router.push('/');
         } catch (error) {
             console.error('Error saving design:', error);
         } finally {

@@ -6,7 +6,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Send } from 'lucide-react'
 import { Comment } from '@/lib/types'
-import { getComments, postComment } from '@/lib/api'
+// import { getComments, postComment } from '@/lib/api'
 
 interface CommentSystemProps {
   projectId: string
@@ -18,16 +18,16 @@ export default function CommentSystem({ projectId }: CommentSystemProps) {
 
   useEffect(() => {
     const fetchComments = async () => {
-      const fetchedComments = await getComments(projectId)
-      setComments(fetchedComments)
+      //TODO const fetchedComments = await getComments(projectId)
+      //TODO setComments(fetchedComments)
     }
     fetchComments()
   }, [projectId])
 
   const handleSubmitComment = async () => {
     if (newComment.trim()) {
-      const comment = await postComment(projectId, newComment)
-      setComments([...comments, comment])
+      //TODO const comment = await postComment(projectId, newComment)
+      //TODO setComments([...comments, comment])
       setNewComment('')
     }
   }
@@ -45,7 +45,7 @@ export default function CommentSystem({ projectId }: CommentSystemProps) {
               <div className="flex items-center justify-between">
                 <h4 className="font-semibold">{comment.author.name}</h4>
                 <span className="text-sm text-muted-foreground">
-                  {new Date(comment.timestamp).toLocaleString()}
+                  {new Date(comment.createdAt).toLocaleString()}
                 </span>
               </div>
               <p className="mt-1">{comment.content}</p>

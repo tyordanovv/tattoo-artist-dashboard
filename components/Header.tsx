@@ -13,16 +13,17 @@ import {
 import { Badge } from './ui/badge'
 import { createClient } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
+import { User } from '@/lib/types'
 
 interface HeaderProps {
-  user: { name: string; role: string } | null
-  searchTerm: string
-  setSearchTerm: (term: string) => void
-  filterStatus: string
-  setFilterStatus: (status: string) => void
+  user: User | null
+  // searchTerm: string
+  // setSearchTerm: (term: string) => void
+  // filterStatus: string
+  // setFilterStatus: (status: string) => void
 }
 
-export default function Header({ user, searchTerm, setSearchTerm, filterStatus, setFilterStatus }: HeaderProps) {
+export default function Header({ user }: HeaderProps) { // , searchTerm, setSearchTerm, filterStatus, setFilterStatus
   const supabase = createClient();
   const router = useRouter();
 
@@ -36,9 +37,10 @@ export default function Header({ user, searchTerm, setSearchTerm, filterStatus, 
   }
   
   return (
-    <header className="bg-card border-b border-border p-4 flex items-center justify-between">
-      <div className="flex items-center space-x-4 flex-1">
-        <Search className="text-muted-foreground" />
+    <header className="bg-card border-b border-border p-4 flex flex-col sm:flex-row items-center justify-between">
+      <div className="w-full sm:w-auto flex items-center justify-center sm:justify-start space-x-4 mb-4 sm:mb-0">
+
+        {/* <Search className="text-muted-foreground" />
         <Input
           type="text"
           placeholder="Search projects..."
@@ -56,9 +58,9 @@ export default function Header({ user, searchTerm, setSearchTerm, filterStatus, 
             <SelectItem value="awaiting-feedback">Awaiting Feedback</SelectItem>
             <SelectItem value="approved">Approved</SelectItem>
           </SelectContent>
-        </Select>
+        </Select> */}
       </div>
-      <div className="flex items-center gap-4">
+      <div className="w-full sm:w-auto flex items-center justify-center sm:justify-end gap-4 flex-wrap">
         <Button variant="ghost" size="icon" className="text-foreground">
           <Bell className="h-5 w-5" />
           <span className="sr-only">Notifications</span>

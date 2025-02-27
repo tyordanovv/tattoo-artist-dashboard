@@ -6,10 +6,10 @@ import { motion } from 'framer-motion'
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Project } from '@/lib/types'
+import { Design } from '@/lib/types'
 
 interface ProjectCardProps {
-  project: Project
+  project: Design
 }
 
 export default function ProjectCard({ project }: ProjectCardProps) {
@@ -23,16 +23,16 @@ export default function ProjectCard({ project }: ProjectCardProps) {
         <CardHeader className="p-0">
           <div className="relative h-48">
             <Image
-              src={project.designUrl}
+              src={project.imageUrl}
               alt={`Design for ${project.clientName}`}
-              layout="fill"
-              objectFit="cover"
+              fill
+              className="object-cover" 
+              priority 
             />
           </div>
         </CardHeader>
         <CardContent className="p-4">
           <CardTitle className="text-lg font-semibold mb-2 text-foreground">{project.clientName}</CardTitle>
-          <p className="text-sm text-muted-foreground mb-2">{project.theme}</p>
           <Badge className={`status-${project.status.toLowerCase().replace(' ', '-')}`}>
             {project.status}
           </Badge>

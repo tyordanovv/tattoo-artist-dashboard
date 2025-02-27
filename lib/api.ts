@@ -1,114 +1,254 @@
-import { Project, Comment, Version } from './types'
+import { createClient } from "./supabaseClient"
+import { Design, User } from "./types"
 
-// Mock data
-const projects: Project[] = [
-  {
-    id: '1',
-    clientName: 'Alice Johnson',
-    theme: 'Nature-inspired sleeve',
-    status: 'In Progress',
-    designUrl: '/placeholder.svg?height=400&width=600',
-  },
-]
-
-const comments: { [key: string]: Comment[] } = {
-  '1': [
-    {
-      id: '1',
-      author: { name: 'Alice Johnson', avatarUrl: '/placeholder.svg?height=40&width=40' },
-      content: 'I love the overall design! Can we add more flowers?',
-      timestamp: '2023-06-15T10:30:00Z',
-    },
-    // ... (add more mock comments as needed)
-  ],
+// User related API calls
+export const getUserSession = async () => {
+  const supabase = createClient()
+  return await supabase.auth.getSession()
 }
 
-const versions: { [key: string]: Version[] } = {
-  '1': [
-    {
-      id: '1',
-      number: 1,
-      imageUrl: '/placeholder.svg?height=400&width=600',
-      createdAt: '2023-06-14T09:00:00Z',
-    },
-    // ... (add more mock versions as needed)
-  ],
+export const getUserData = async (userId: string): Promise<User | null> => {
+  const supabase = createClient()
+  
+  try {
+    const { data, error } = await supabase
+      .from('users')
+      .select('id, name, role')
+      .eq('id', userId)
+      .single()
+    
+    if (error) {
+      console.error('Error fetching user:', error)
+      return null
+    }
+    
+    return data
+  } catch (error) {
+    console.error('Error in getUserData:', error)
+    return null
+  }
 }
 
-// API functions
-export const getProjectById = async (id: string): Promise<Project> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const project = projects.find(p => p.id === id)
-      resolve(project || projects[0])
-    }, 500)
-  })
+// Project/Design related API calls
+export const getProjects = async (userId: string, userRole: string): Promise<Design[]> => {
+  const supabase = createClient()
+  
+  try {
+    let query = supabase
+      .from('designs')
+      .select(`
+        id, client_id, status, image_url, version, created_at, isSelected, scheduled_at,
+        users!designs_client_id_fkey (name)
+      `)
+      .eq('isSelected', true)
+    
+    // Apply filter based on user role
+    if (userRole === 'client') {
+      query = query.eq('client_id', userId)
+    }
+    
+    const { data, error } = await query
+    
+    if (error) {
+      throw error
+    }
+    
+    return (data || []).map((item) => ({
+      id: item.id,
+      clientId: item.client_id,
+      clientName: (item.users as any).name,
+      status: item.status,
+      imageUrl: item.image_url,
+      version: item.version,
+      createdAt: item.created_at,
+      isSelected: item.isSelected,
+      scheduledAt: item.scheduled_at
+    }))
+  } catch (error) {
+    console.error('Error in getProjects:', error)
+    return []
+  }
 }
 
-export const getComments = async (projectId: string): Promise<Comment[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(comments[projectId] || [])
-    }, 500)
-  })
+export const getProjectById = async (projectId: string): Promise<Design | null> => {
+  const supabase = createClient()
+  
+  try {
+    const { data, error } = await supabase
+      .from('designs')
+      .select(`
+        id, client_id, status, image_url, version, created_at, isSelected, scheduled_at,
+        users!designs_client_id_fkey (name)
+      `)
+      .eq('id', projectId)
+      .single()
+    
+    if (error) {
+      throw error
+    }
+    
+    if (!data) {
+      return null
+    }
+    
+    return {
+      id: data.id,
+      clientId: data.client_id,
+      clientName: (data.users as any).name,
+      status: data.status,
+      imageUrl: data.image_url,
+      version: data.version,
+      createdAt: data.created_at,
+      isSelected: data.isSelected,
+      scheduledAt: data.scheduled_at
+    }
+  } catch (error) {
+    console.error('Error in getProjectById:', error)
+    return null
+  }
 }
 
-export const postComment = async (projectId: string, content: string): Promise<Comment> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      const newComment: Comment = {
-        id: Date.now().toString(),
-        author: { name: 'Current User', avatarUrl: '/placeholder.svg?height=40&width=40' },
-        content,
-        timestamp: new Date().toISOString(),
-      }
-      comments[projectId] = [...(comments[projectId] || []), newComment]
-      resolve(newComment)
-    }, 500)
-  })
+// Comment related API calls
+// export const getComments = async (projectId: string): Promise<Comment[]> => {
+//   const supabase = createClient()
+  
+//   try {
+//     const { data, error } = await supabase
+//       .from('comments')
+//       .select(`
+//         id, content, created_at, project_id, user_id,
+//         users (name, role)
+//       `)
+//       .eq('project_id', projectId)
+//       .order('created_at', { ascending: true })
+    
+//     if (error) {
+//       throw error
+//     }
+    
+//     return (data || []).map((item) => ({
+//       id: item.id,
+//       content: item.content,
+//       createdAt: item.created_at,
+//       projectId: item.project_id,
+//       userId: item.user_id,
+//       userName: item.users.name,
+//       userRole: item.users.role,
+//     }))
+//   } catch (error) {
+//     console.error('Error in getComments:', error)
+//     return []
+//   }
+// }
+
+// export const postComment = async (designId: string, content: string, userId: string): Promise<Comment | null> => {
+//   const supabase = createClient()
+  
+//   try {
+//     const { data, error } = await supabase
+//       .from('comments')
+//       .insert([
+//         { 
+//           design_id: designId, 
+//           content, 
+//           user_id: userId 
+//         }
+//       ])
+//       .select(`
+//         id, content, created_at, design_id, user_id,
+//         users (name, role)
+//       `)
+//       .single()
+    
+//     if (error) {
+//       throw error
+//     }
+    
+//     if (!data) {
+//       return null
+//     }
+    
+//     return {
+//       id: data.id,
+//       content: data.content,
+//       createdAt: data.created_at,
+//       designId: data.design_id,
+//       userId: data.user_id,
+//       userName: data.users.name,
+//       userRole: data.users.role,
+//     }
+//   } catch (error) {
+//     console.error('Error in postComment:', error)
+//     return null
+//   }
+// }
+
+// Version related API calls
+// export const getVersions = async (projectId: string): Promise<Version[]> => {
+//   const supabase = createClient()
+  
+//   try {
+//     const { data, error } = await supabase
+//       .from('designs')
+//       .select(`
+//         id, version, image_url, created_at, status, isSelected
+//       `)
+//       .eq('client_id', (await getProjectById(projectId))?.clientId)
+//       .order('version', { ascending: false })
+    
+//     if (error) {
+//       throw error
+//     }
+    
+//     return (data || []).map((item) => ({
+//       id: item.id,
+//       version: item.version,
+//       imageUrl: item.image_url,
+//       createdAt: item.created_at,
+//       status: item.status,
+//       isSelected: item.isSelected,
+//     }))
+//   } catch (error) {
+//     console.error('Error in getVersions:', error)
+//     return []
+//   }
+// }
+
+// Project status update
+export const updateDesignSchedule = async (designId: string, fullDateTime: string): Promise<boolean> => {
+  const supabase = createClient()
+  
+  try {
+    const { error } = await supabase
+      .from('designs')
+      .update({ 'scheduled_at': fullDateTime })
+      .eq('id', designId)
+    
+    if (error) {
+      throw error
+    }
+    
+    return true
+  } catch (error) {
+    console.error('Error in updateProjectStatus:', error)
+    return false
+  }
 }
 
-export const getVersions = async (projectId: string): Promise<Version[]> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(versions[projectId] || [])
-    }, 500)
-  })
+// Authentication helpers
+export const checkAndRedirect = async () => {
+  const supabase = createClient()
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  if (!session) {
+    return { authenticated: false, user: null }
+  }
+  
+  const userData = await getUserData(session.user.id)
+  
+  if (!userData) {
+    return { authenticated: false, user: null }
+  }
+  
+  return { authenticated: true, user: userData }
 }
-
-export const scheduleConsultation = async (projectId: string, date: Date, time: string): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Scheduled consultation for project ${projectId} on ${date.toDateString()} at ${time}`)
-      resolve()
-    }, 500)
-  })
-}
-
-export const approveDesign = async (projectId: string): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Approved design for project ${projectId}`)
-      resolve()
-    }, 500)
-  })
-}
-
-export const rejectDesign = async (projectId: string): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Rejected design for project ${projectId}`)
-      resolve()
-    }, 500)
-  })
-}
-
-export const requestEdit = async (projectId: string): Promise<void> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      console.log(`Requested edit for project ${projectId}`)
-      resolve()
-    }, 500)
-  })
-}
-

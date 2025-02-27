@@ -18,7 +18,7 @@ export default function ReferenceUpload({ onUpload }: { onUpload: (files: File[]
   return (
     <div className="space-y-4">
       <h2 className="text-2xl font-semibold">
-        Do you have any reference images or ideas you'd like to upload?
+        Do you have any reference images or ideas you would like to upload?
       </h2>
       <div className="flex items-center space-x-4">
         <Input

@@ -63,16 +63,6 @@ export default function NewUserForm() {
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Label htmlFor="name">Client name</Label>
-          <Input
-            id="name"
-            type="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </div>
-        <div>
           <Label htmlFor="email">Client email</Label>
           <Input
             id="email"

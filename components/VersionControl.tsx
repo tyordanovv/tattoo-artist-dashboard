@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { ArrowLeftRight, Eye } from 'lucide-react'
 import { Version } from '@/lib/types'
-import { getVersions } from '@/lib/api'
 import Image from 'next/image' // Import Next.js Image component
 
 interface VersionControlProps {
@@ -17,10 +16,10 @@ export default function VersionControl({ projectId }: VersionControlProps) {
   const [selectedVersion, setSelectedVersion] = useState<Version | null>(null)
 
   useEffect(() => {
-    const fetchVersions = async () => {
-      const fetchedVersions = await getVersions(projectId)
-      setVersions(fetchedVersions)
-      setSelectedVersion(fetchedVersions[0])
+    const fetchVersions = async () => { // TODO
+      //const fetchedVersions = await getVersions(projectId)
+      // setVersions(fetchedVersions)
+      // setSelectedVersion(fetchedVersions[0])
     }
     fetchVersions()
   }, [projectId])

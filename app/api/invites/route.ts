@@ -28,7 +28,7 @@ export async function POST(request: Request) {
         
         if (authError || !user) {
             return NextResponse.json(
-                { error: 'Unauthorized: Must be logged in as an artist' }, 
+                { error: 'Unauthorized: Must be logged in.' }, 
                 { status: 401 }
             )
         }
@@ -41,30 +41,11 @@ export async function POST(request: Request) {
 
         if (userError || userData.role !== 'artist') {
             return NextResponse.json(
-                { error: 'Unauthorized: Must be an artist' }, 
+                { error: 'Unauthorized: Must be an artist.' }, 
                 { status: 403 }
             )
         }
         console.log("userData", userData)
-
-
-        // Parse and validate request body
-        const requestBody = await request.json()
-        const validatedData = InviteSchema.parse(requestBody)
-
-        // Check if client already exists
-        const { data: existingClient, error: clientCheckError } = await supabase
-            .from('users')
-            .select('id')
-            .eq('email', validatedData.email)
-            .single()
-
-        if (existingClient) {
-            return NextResponse.json(
-                { error: 'A user with this email already exists' }, 
-                { status: 409 }
-            )
-        }
 
         // Generate invite
         const inviteId = crypto.randomUUID()
