@@ -46,7 +46,7 @@ export async function POST(request: Request) {
 
     const artist_id = data?.artist_id;
 
-    for (let i = 0; i < 1; i++) {
+    for (let i = 0; i < 3; i++) {
       const form = new FormData();
       form.append("prompt", prompt);
       form.append("output_format", "webp");
@@ -69,7 +69,7 @@ export async function POST(request: Request) {
 
       // Generate image using Stability AI
       const response = await axios.post(
-        "https://api.stability.ai/v2beta/stable-image/generate/core",
+        "https://api.stability.ai/v2beta/stable-image/generate/ultra",
         form,
         {
           headers: {
